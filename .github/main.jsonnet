@@ -1,33 +1,33 @@
-local providerDirs = [
-  '/terraform-provider/providers/kreuzwerker/docker',
-  '/terraform-provider/providers/hashicorp/archive',
-  '/terraform-provider/providers/hashicorp/google',
-  '/terraform-provider/providers/hashicorp/assert',
-  '/terraform-provider/providers/hashicorp/tfmigrate',
-  '/terraform-provider/providers/hashicorp/time',
-  '/terraform-provider/providers/hashicorp/local',
-  '/terraform-provider/providers/hashicorp/tls',
-  '/terraform-provider/providers/hashicorp/null',
-  '/terraform-provider/providers/hashicorp/azurerm',
-  '/terraform-provider/providers/hashicorp/http',
-  '/terraform-provider/providers/hashicorp/aws',
-  '/terraform-provider/providers/hashicorp/external',
-  '/terraform-provider/providers/hashicorp/random',
-  '/terraform-provider/providers/hashicorp/kubernetes',
-  '/terraform-provider/providers/hashicorp/dns',
-  '/terraform-provider/providers/hashicorp/cloudinit',
-  '/terraform-provider/providers/PagerDuty/pagerduty',
-  '/terraform-provider/providers/logzio/logzio',
-  '/terraform-provider/providers/grafana/grafana',
-  '/terraform-provider/providers/integrations/github',
-  '/terraform-provider/providers/DataDog/datadog',
-  '/terraform-provider/providers/newrelic/newrelic',
-  '/terraform-provider/providers/marcbran/jsonnet',
-  '/terraform-provider/providers/marcbran/dolt',
+local providers = [
+  'registry.terraform.io/kreuzwerker/docker',
+  'registry.terraform.io/hashicorp/archive',
+  'registry.terraform.io/hashicorp/google',
+  'registry.terraform.io/hashicorp/assert',
+  'registry.terraform.io/hashicorp/tfmigrate',
+  'registry.terraform.io/hashicorp/time',
+  'registry.terraform.io/hashicorp/local',
+  'registry.terraform.io/hashicorp/tls',
+  'registry.terraform.io/hashicorp/null',
+  'registry.terraform.io/hashicorp/azurerm',
+  'registry.terraform.io/hashicorp/http',
+  'registry.terraform.io/hashicorp/aws',
+  'registry.terraform.io/hashicorp/external',
+  'registry.terraform.io/hashicorp/random',
+  'registry.terraform.io/hashicorp/kubernetes',
+  'registry.terraform.io/hashicorp/dns',
+  'registry.terraform.io/hashicorp/cloudinit',
+  'registry.terraform.io/PagerDuty/pagerduty',
+  'registry.terraform.io/logzio/logzio',
+  'registry.terraform.io/grafana/grafana',
+  'registry.terraform.io/integrations/github',
+  'registry.terraform.io/DataDog/datadog',
+  'registry.terraform.io/newrelic/newrelic',
+  'registry.terraform.io/marcbran/jsonnet',
+  'registry.terraform.io/marcbran/dolt',
 ];
 
-{
-  'dependabot.yml': std.manifestYamlDoc({
+local directory = {
+  'dependabot.yml': {
     version: 2,
     updates: [
       {
@@ -43,10 +43,64 @@ local providerDirs = [
     ] + [
       {
         'package-ecosystem': 'terraform',
-        directory: providerDir,
+        directory: '/terraform-provider/providers/%s' % provider,
         schedule: { interval: 'daily' },
       }
-      for providerDir in providerDirs
+      for provider in providers
     ],
-  }, indent_array_in_object=true, quote_keys=false),
-}
+  },
+  workflows: {
+    ['test-%s.yml' % std.strReplace(std.strReplace(provider, '/', '-'), '.', '-')]: {
+      name: 'Test %s' % provider,
+      on: {
+        pull_request: {
+          paths: [provider],
+        },
+      },
+      permissions: {
+        contents: 'read',
+      },
+      jobs: {
+        build: {
+          name: 'Build',
+          'runs-on': 'ubuntu-latest',
+          'timeout-minutes': 5,
+          steps: [
+            {
+              uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683',
+            },
+          ],
+        },
+      },
+    }
+    for provider in providers
+  },
+};
+
+local manifestations = {
+  '.yml'(data): std.manifestYamlDoc(data, indent_array_in_object=true, quote_keys=false),
+};
+
+local flattenObject(value) =
+  if std.type(value) == 'object' then
+    std.foldl(function(acc, curr) acc + curr, [
+      {
+        [std.join('/', std.filter(function(key) key != '', [child.key, childChild.key]))]: childChild.value
+        for childChild in std.objectKeysValues(flattenObject(child.value))
+      }
+      for child in std.objectKeysValues(value)
+    ], {})
+  else { '': value };
+
+local manifest(directory, manifestations) =
+  flattenObject({
+    [kv.key]:
+      if std.length(std.findSubstr('.', kv.key)) > 0
+      then
+        local manifestation = std.get(manifestations, '.%s' % std.split(kv.key, '.')[1], function(value) value);
+        manifestation(kv.value)
+      else manifest(kv.value, manifestations)
+    for kv in std.objectKeysValues(directory)
+  });
+
+manifest(directory, manifestations)

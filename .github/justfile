@@ -1,3 +1,6 @@
 
 gen:
   jsonnet -S -c -m . main.jsonnet
+
+debug:
+  jsonnet main.jsonnet

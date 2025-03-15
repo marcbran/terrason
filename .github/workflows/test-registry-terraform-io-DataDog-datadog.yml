@@ -1,0 +1,18 @@
+jobs:
+  build:
+    name: "Build"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+      - name: "Run linters"
+        uses: "golangci/golangci-lint-action@4696ba8babb6127d732c3c6dde519db15edab9ea"
+        with:
+          version: "latest"
+    timeout-minutes: 5
+name: "Test registry.terraform.io/DataDog/datadog"
+"on":
+  pull_request:
+    paths:
+      - "registry.terraform.io/DataDog/datadog"
+permissions:
+  contents: "read"

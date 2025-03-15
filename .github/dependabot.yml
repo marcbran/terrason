@@ -7,103 +7,103 @@ updates:
     package-ecosystem: "github-actions"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/kreuzwerker/docker"
+  - directory: "/terraform-provider/providers/registry.terraform.io/kreuzwerker/docker"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/archive"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/archive"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/google"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/google"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/assert"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/assert"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/tfmigrate"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/tfmigrate"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/time"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/time"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/local"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/local"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/tls"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/tls"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/null"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/null"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/azurerm"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/azurerm"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/http"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/http"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/aws"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/aws"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/external"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/external"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/random"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/random"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/kubernetes"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/kubernetes"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/dns"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/dns"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/hashicorp/cloudinit"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/cloudinit"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/PagerDuty/pagerduty"
+  - directory: "/terraform-provider/providers/registry.terraform.io/PagerDuty/pagerduty"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/logzio/logzio"
+  - directory: "/terraform-provider/providers/registry.terraform.io/logzio/logzio"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/grafana/grafana"
+  - directory: "/terraform-provider/providers/registry.terraform.io/grafana/grafana"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/integrations/github"
+  - directory: "/terraform-provider/providers/registry.terraform.io/integrations/github"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/DataDog/datadog"
+  - directory: "/terraform-provider/providers/registry.terraform.io/DataDog/datadog"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/newrelic/newrelic"
+  - directory: "/terraform-provider/providers/registry.terraform.io/newrelic/newrelic"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/marcbran/jsonnet"
+  - directory: "/terraform-provider/providers/registry.terraform.io/marcbran/jsonnet"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
-  - directory: "/terraform-provider/providers/marcbran/dolt"
+  - directory: "/terraform-provider/providers/registry.terraform.io/marcbran/dolt"
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
