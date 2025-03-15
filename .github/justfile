@@ -1,0 +1,3 @@
+
+gen:
+  jsonnet -S -c -m . main.jsonnet

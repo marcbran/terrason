@@ -1,0 +1,110 @@
+updates:
+  - directory: "/terraform-provider/cmd/pull-provider"
+    package-ecosystem: "gomod"
+    schedule:
+      interval: "daily"
+  - directory: "/"
+    package-ecosystem: "github-actions"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/kreuzwerker/docker"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/archive"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/google"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/assert"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/tfmigrate"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/time"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/local"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/tls"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/null"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/azurerm"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/http"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/aws"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/external"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/random"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/kubernetes"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/dns"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/hashicorp/cloudinit"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/PagerDuty/pagerduty"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/logzio/logzio"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/grafana/grafana"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/integrations/github"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/DataDog/datadog"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/newrelic/newrelic"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/marcbran/jsonnet"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+  - directory: "/terraform-provider/providers/marcbran/dolt"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
+version: 2
