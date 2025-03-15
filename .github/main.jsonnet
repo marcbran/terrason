@@ -70,14 +70,33 @@ local directory = {
               uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683',
             },
             {
+              uses: 'actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34',
+              with: {
+                'go-version-file': 'terraform-provider/cmd/pull-provider/go.mod',
+                cache: true,
+              },
+            },
+            {
+              uses: 'hashicorp/setup-terraform@v3',
+            },
+            {
               uses: 'jaxxstorm/action-install-gh-release@v1.10.0',
               with: {
                 repo: 'marcbran/jsonnet-kit',
               },
             },
             {
+              name: 'Pull provider spec',
+              run: |||
+                cd terraform-provider/cmd/pull-provider
+                go run main.go ../../providers/%(provider)s
+              ||| % { provider: provider },
+            },
+            {
               name: 'Manifest Jsonnet files',
-              run: 'jsonnet-kit -J ./terraform-provider/template/vendor manifest "./terraform-provider/providers/%s"' % provider,
+              run: |||
+                jsonnet-kit -J ./terraform-provider/template/vendor manifest "./terraform-provider/providers/%(provider)s"
+              ||| % { provider: provider },
             },
           ],
         },
