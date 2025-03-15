@@ -4,6 +4,11 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+      - uses: "jaxxstorm/action-install-gh-release@v1.10.0"
+        with:
+          repo: "marcbran/jsonnet-kit"
+      - name: "Manifest Jsonnet files"
+        run: "jsonnet-kit -J ./terraform-provider/template/vendor manifest \"./terraform-provider/providers/registry.terraform.io/hashicorp/local\""
     timeout-minutes: 5
 name: "Test registry.terraform.io/hashicorp/local"
 "on":

@@ -69,6 +69,16 @@ local directory = {
             {
               uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683',
             },
+            {
+              uses: 'jaxxstorm/action-install-gh-release@v1.10.0',
+              with: {
+                repo: 'marcbran/jsonnet-kit',
+              },
+            },
+            {
+              name: 'Manifest Jsonnet files',
+              run: 'jsonnet-kit -J ./terraform-provider/template/vendor manifest "./terraform-provider/providers/%s"' % provider,
+            },
           ],
         },
       },
@@ -81,26 +91,7 @@ local manifestations = {
   '.yml'(data): std.manifestYamlDoc(data, indent_array_in_object=true, quote_keys=false),
 };
 
-local flattenObject(value) =
-  if std.type(value) == 'object' then
-    std.foldl(function(acc, curr) acc + curr, [
-      {
-        [std.join('/', std.filter(function(key) key != '', [child.key, childChild.key]))]: childChild.value
-        for childChild in std.objectKeysValues(flattenObject(child.value))
-      }
-      for child in std.objectKeysValues(value)
-    ], {})
-  else { '': value };
-
-local manifest(directory, manifestations) =
-  flattenObject({
-    [kv.key]:
-      if std.length(std.findSubstr('.', kv.key)) > 0
-      then
-        local manifestation = std.get(manifestations, '.%s' % std.split(kv.key, '.')[1], function(value) value);
-        manifestation(kv.value)
-      else manifest(kv.value, manifestations)
-    for kv in std.objectKeysValues(directory)
-  });
-
-manifest(directory, manifestations)
+{
+  directory: directory,
+  manifestations: manifestations,
+}

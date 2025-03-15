@@ -1,6 +1,6 @@
 
-gen:
-  jsonnet -S -c -m . main.jsonnet
+manifest:
+  jsonnet-kit manifest .
 
 debug:
   jsonnet main.jsonnet

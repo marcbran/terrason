@@ -9,6 +9,15 @@
         }
       },
       "version": "jsonnet"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/marcbran/jsonnet.git",
+          "subdir": "jsonnet-manifest"
+        }
+      },
+      "version": "jsonnet-manifest"
     }
   ],
   "legacyImports": true

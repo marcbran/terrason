@@ -1,3 +1,4 @@
+local jsonnetManifest = import 'jsonnet-manifest/main.libsonnet';
 local j = import 'jsonnet/main.libsonnet';
 
 local build = j.Local('build', j.Object([
@@ -370,4 +371,15 @@ local terraformProvider(provider) =
     j.Id('providerWithConfiguration'),
   ], newlines=2).output;
 
-terraformProvider
+local terraformProviderManifest(provider) = {
+  directory: {
+    gen: {
+      'main.libsonnet': terraformProvider(provider),
+    },
+  },
+  manifestations: {
+    '.libsonnet'(data): jsonnetManifest.formatJsonnet(data),
+  },
+};
+
+terraformProviderManifest
