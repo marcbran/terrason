@@ -54,7 +54,7 @@ local directory = {
       name: 'Test %s' % provider,
       on: {
         pull_request: {
-          paths: [provider],
+          paths: ['%s/**' % provider],
         },
       },
       permissions: {
