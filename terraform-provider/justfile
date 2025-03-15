@@ -1,0 +1,62 @@
+set fallback := true
+
+default:
+    @just --list
+
+[no-cd]
+jsonnet-release branch path="" source=".":
+    #!/usr/bin/env bash
+    branch="{{branch}}"
+    path="{{path}}"
+    source="{{source}}"
+
+    if [[ "${path}" == "" ]]; then
+      path="${branch}"
+    fi
+
+    rm -rf release
+    git clone git@github.com:marcbran/jsonnet.git release
+
+    pushd release
+    git checkout "${branch}" || git checkout -b "${branch}"
+    git pull
+    popd
+
+    mkdir -p "release/${path}"
+    cp "${source}/main.libsonnet" "release/${path}/main.libsonnet"
+
+    pushd release
+    git add -A
+    git commit -m "release ${path}"
+    git push --set-upstream origin "${branch}"
+    popd
+
+    rm -rf release
+
+pull-provider dir:
+    #!/usr/bin/env bash
+    dir="{{dir}}"
+
+    go run ./cmd/pull-provider/main.go "${dir}"
+
+gen-provider dir: (pull-provider dir)
+    #!/usr/bin/env bash
+    dir="{{dir}}"
+
+    mkdir -p "${dir}/gen"
+    pushd template
+    jb install
+    jsonnet -S -J vendor --tla-code-file "provider=../${dir}/provider.json" main.libsonnet | jsonnetfmt - > "../${dir}/gen/main.libsonnet"
+    popd
+
+release-provider dir: (gen-provider dir)
+    #!/usr/bin/env bash
+    dir="{{dir}}"
+
+    source="$(jsonnet -S -e "(import '${dir}/provider.json').source")"
+    name="$(jsonnet -S -e "(import '${dir}/provider.json').name")"
+    branch="terraform-provider/${source}"
+    path="terraform-provider-${name}"
+    gen="${dir}/gen"
+
+    just jsonnet-release "${branch}" "${path}" "${gen}"
