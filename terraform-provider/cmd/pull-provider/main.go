@@ -83,7 +83,7 @@ func readSource(dir string) (string, error) {
 	parser := hclparse.NewParser()
 	file, diags := parser.ParseHCLFile(filepath.Join(dir, ".terraform.lock.hcl"))
 	if diags.HasErrors() {
-		return "", fmt.Errorf("error parsing .terraform.locl.hcl: %s", diags.Error())
+		return "", fmt.Errorf("error parsing .terraform.lock.hcl: %s", diags.Error())
 	}
 
 	content, diags := file.Body.Content(&hcl.BodySchema{
@@ -95,7 +95,7 @@ func readSource(dir string) (string, error) {
 		},
 	})
 	if diags.HasErrors() {
-		return "", fmt.Errorf("error decoding .terraform.locl.hcl: %s", diags.Error())
+		return "", fmt.Errorf("error decoding .terraform.lock.hcl: %s", diags.Error())
 	}
 	source := content.Blocks[0].Labels[0]
 	return source, nil
@@ -105,7 +105,7 @@ func readVersion(dir string) (string, error) {
 	parser := hclparse.NewParser()
 	file, diags := parser.ParseHCLFile(filepath.Join(dir, ".terraform.lock.hcl"))
 	if diags.HasErrors() {
-		return "", fmt.Errorf("error parsing .terraform.locl.hcl: %s", diags.Error())
+		return "", fmt.Errorf("error parsing .terraform.lock.hcl: %s", diags.Error())
 	}
 
 	content, diags := file.Body.Content(&hcl.BodySchema{
@@ -117,7 +117,7 @@ func readVersion(dir string) (string, error) {
 		},
 	})
 	if diags.HasErrors() {
-		return "", fmt.Errorf("error decoding .terraform.locl.hcl: %s", diags.Error())
+		return "", fmt.Errorf("error decoding .terraform.lock.hcl: %s", diags.Error())
 	}
 	partialContent, _, diags := content.Blocks[0].Body.PartialContent(&hcl.BodySchema{
 		Attributes: []hcl.AttributeSchema{
@@ -127,7 +127,7 @@ func readVersion(dir string) (string, error) {
 		},
 	})
 	if diags.HasErrors() {
-		return "", fmt.Errorf("error getting attributes from .terraform.locl.hcl: %s", diags.Error())
+		return "", fmt.Errorf("error getting attributes from .terraform.lock.hcl: %s", diags.Error())
 	}
 	value, diags := partialContent.Attributes["version"].Expr.Value(nil)
 	version := value.AsString()
