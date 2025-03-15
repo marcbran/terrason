@@ -9,6 +9,6 @@ name: "Test registry.terraform.io/hashicorp/kubernetes"
 "on":
   pull_request:
     paths:
-      - "registry.terraform.io/hashicorp/kubernetes/**"
+      - "terraform-provider/providers/registry.terraform.io/hashicorp/kubernetes/**"
 permissions:
   contents: "read"

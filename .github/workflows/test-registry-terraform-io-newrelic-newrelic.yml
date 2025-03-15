@@ -9,6 +9,6 @@ name: "Test registry.terraform.io/newrelic/newrelic"
 "on":
   pull_request:
     paths:
-      - "registry.terraform.io/newrelic/newrelic/**"
+      - "terraform-provider/providers/registry.terraform.io/newrelic/newrelic/**"
 permissions:
   contents: "read"

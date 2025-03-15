@@ -9,6 +9,6 @@ name: "Test registry.terraform.io/logzio/logzio"
 "on":
   pull_request:
     paths:
-      - "registry.terraform.io/logzio/logzio/**"
+      - "terraform-provider/providers/registry.terraform.io/logzio/logzio/**"
 permissions:
   contents: "read"

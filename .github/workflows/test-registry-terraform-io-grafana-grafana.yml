@@ -9,6 +9,6 @@ name: "Test registry.terraform.io/grafana/grafana"
 "on":
   pull_request:
     paths:
-      - "registry.terraform.io/grafana/grafana/**"
+      - "terraform-provider/providers/registry.terraform.io/grafana/grafana/**"
 permissions:
   contents: "read"

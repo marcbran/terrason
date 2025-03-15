@@ -9,6 +9,6 @@ name: "Test registry.terraform.io/hashicorp/random"
 "on":
   pull_request:
     paths:
-      - "registry.terraform.io/hashicorp/random/**"
+      - "terraform-provider/providers/registry.terraform.io/hashicorp/random/**"
 permissions:
   contents: "read"

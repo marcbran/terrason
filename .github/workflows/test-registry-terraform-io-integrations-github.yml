@@ -9,6 +9,6 @@ name: "Test registry.terraform.io/integrations/github"
 "on":
   pull_request:
     paths:
-      - "registry.terraform.io/integrations/github/**"
+      - "terraform-provider/providers/registry.terraform.io/integrations/github/**"
 permissions:
   contents: "read"

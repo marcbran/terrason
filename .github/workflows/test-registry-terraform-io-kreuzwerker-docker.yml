@@ -9,6 +9,6 @@ name: "Test registry.terraform.io/kreuzwerker/docker"
 "on":
   pull_request:
     paths:
-      - "registry.terraform.io/kreuzwerker/docker/**"
+      - "terraform-provider/providers/registry.terraform.io/kreuzwerker/docker/**"
 permissions:
   contents: "read"

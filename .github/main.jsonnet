@@ -54,7 +54,7 @@ local directory = {
       name: 'Test %s' % provider,
       on: {
         pull_request: {
-          paths: ['%s/**' % provider],
+          paths: ['terraform-provider/providers/%s/**' % provider],
         },
       },
       permissions: {

@@ -9,6 +9,6 @@ name: "Test registry.terraform.io/marcbran/dolt"
 "on":
   pull_request:
     paths:
-      - "registry.terraform.io/marcbran/dolt/**"
+      - "terraform-provider/providers/registry.terraform.io/marcbran/dolt/**"
 permissions:
   contents: "read"

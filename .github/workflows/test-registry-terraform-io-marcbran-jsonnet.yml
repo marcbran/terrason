@@ -9,6 +9,6 @@ name: "Test registry.terraform.io/marcbran/jsonnet"
 "on":
   pull_request:
     paths:
-      - "registry.terraform.io/marcbran/jsonnet/**"
+      - "terraform-provider/providers/registry.terraform.io/marcbran/jsonnet/**"
 permissions:
   contents: "read"

@@ -9,6 +9,6 @@ name: "Test registry.terraform.io/hashicorp/tfmigrate"
 "on":
   pull_request:
     paths:
-      - "registry.terraform.io/hashicorp/tfmigrate/**"
+      - "terraform-provider/providers/registry.terraform.io/hashicorp/tfmigrate/**"
 permissions:
   contents: "read"

@@ -9,6 +9,6 @@ name: "Test registry.terraform.io/DataDog/datadog"
 "on":
   pull_request:
     paths:
-      - "registry.terraform.io/DataDog/datadog/**"
+      - "terraform-provider/providers/registry.terraform.io/DataDog/datadog/**"
 permissions:
   contents: "read"

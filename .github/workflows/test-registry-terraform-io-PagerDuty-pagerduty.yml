@@ -9,6 +9,6 @@ name: "Test registry.terraform.io/PagerDuty/pagerduty"
 "on":
   pull_request:
     paths:
-      - "registry.terraform.io/PagerDuty/pagerduty/**"
+      - "terraform-provider/providers/registry.terraform.io/PagerDuty/pagerduty/**"
 permissions:
   contents: "read"
