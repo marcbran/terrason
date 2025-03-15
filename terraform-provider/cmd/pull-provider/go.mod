@@ -1,8 +1,7 @@
 module github.com/marcbran/jsonnet-utils/terraform-provider/cmd/pull-provider
 
 go 1.22.1
-
-require github.com/hashicorp/hcl/v2 v2.22.0
+require github.com/hashicorp/hcl/v2 v2.23.0
 
 require (
 	github.com/agext/levenshtein v1.2.1 // indirect
