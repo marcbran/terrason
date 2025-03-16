@@ -1,6 +1,6 @@
-local jsonnet = import './it/terraform-provider-jsonnet/main.libsonnet';
-local Local = import './it/terraform-provider-local/main.libsonnet';
 local tf = import './main.libsonnet';
+local jsonnet = import './tests/terraform-provider-jsonnet/main.libsonnet';
+local Local = import './tests/terraform-provider-local/main.libsonnet';
 
 local cfg(blocks) = [
   {
@@ -41,7 +41,7 @@ local localJsonnetCfg(blocks) = [
   {
     terraform: {
       required_providers: {
-        jsonnet: { source: 'registry.terraform.io/marcbran/jsonnet', version: '0.0.1' },
+        jsonnet: { source: 'registry.terraform.io/marcbran/jsonnet', version: '0.4.0' },
         'local': { source: 'registry.terraform.io/hashicorp/local', version: '2.5.2' },
       },
     },
@@ -219,14 +219,14 @@ local moduleTests = {
       it: false,
       input:: [
         tf.Module('example', {
-          source: './example',
+          source: '../tests/example',
         }),
       ],
       expected: cfg([
         {
           module: {
             example: {
-              source: './example',
+              source: '../tests/example',
             },
           },
         },
@@ -433,7 +433,7 @@ local providerTests = {
         [
           Local.resource.file('example_txt', {
             filename: 'example.txt',
-            content: jsonnet.func.evaluate('{}'),
+            content: jsonnet.func.evaluate('{}', { jpaths: [] }),
           }),
         ],
       expected: localJsonnetCfg([
@@ -441,7 +441,7 @@ local providerTests = {
           resource: {
             local_file: {
               example_txt: {
-                content: '${provider::jsonnet::evaluate("{}")}',
+                content: '${provider::jsonnet::evaluate("{}", {"jpaths":[]})}',
                 filename: 'example.txt',
               },
             },
@@ -607,7 +607,7 @@ local dataTests = {
       name: 'reference',
       input::
         local example = Local.data.file('example_txt', {
-          filename: 'example.txt',
+          filename: '../tests/example/example.txt',
         });
         [
           example,
@@ -620,7 +620,7 @@ local dataTests = {
           data: {
             local_file: {
               example_txt: {
-                filename: 'example.txt',
+                filename: '../tests/example/example.txt',
               },
             },
           },
@@ -638,7 +638,7 @@ local dataTests = {
       name: 'field reference',
       input::
         local example = Local.data.file('example_txt', {
-          filename: 'example.txt',
+          filename: '../tests/example/example.txt',
         });
         [
           example,
@@ -651,7 +651,7 @@ local dataTests = {
           data: {
             local_file: {
               example_txt: {
-                filename: 'example.txt',
+                filename: '../tests/example/example.txt',
               },
             },
           },
@@ -669,7 +669,7 @@ local dataTests = {
       name: 'function call',
       input::
         local example = Local.data.file('example_txt', {
-          filename: 'example.txt',
+          filename: '../tests/example/example.txt',
         });
         [
           example,
@@ -682,7 +682,7 @@ local dataTests = {
           data: {
             local_file: {
               example_txt: {
-                filename: 'example.txt',
+                filename: '../tests/example/example.txt',
               },
             },
           },
@@ -700,7 +700,7 @@ local dataTests = {
       name: 'inbound reference',
       input::
         local example = Local.data.file('example_txt', {
-          filename: 'example.txt',
+          filename: '../tests/example/example.txt',
         });
         [
           example,
@@ -713,7 +713,7 @@ local dataTests = {
           data: {
             local_file: {
               example_txt: {
-                filename: 'example.txt',
+                filename: '../tests/example/example.txt',
               },
             },
           },

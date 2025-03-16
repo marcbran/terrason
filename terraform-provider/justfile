@@ -7,17 +7,14 @@ pull-provider dir:
     #!/usr/bin/env bash
     dir="{{dir}}"
 
-    go run ./cmd/pull-provider/main.go "${dir}"
+    cd cmd/pull-provider
+    go run main.go "../../${dir}"
 
 gen-provider dir: (pull-provider dir)
     #!/usr/bin/env bash
     dir="{{dir}}"
 
-    mkdir -p "${dir}/gen"
-    pushd template
-    jb install
-    jsonnet -S -J vendor --tla-code-file "provider=../${dir}/provider.json" main.libsonnet | jsonnetfmt - > "../${dir}/gen/main.libsonnet"
-    popd
+    jsonnet-kit -J ./template/vendor manifest "./${dir}"
 
 release-provider dir: (gen-provider dir)
     #!/usr/bin/env bash
