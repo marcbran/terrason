@@ -1,0 +1,32 @@
+jobs:
+  test:
+    name: "Test"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+      - uses: "hashicorp/setup-terraform@v3"
+      - uses: "extractions/setup-just@v3"
+      - uses: "jaxxstorm/action-install-gh-release@v1.10.0"
+        with:
+          repo: "marcbran/jsonnet-kit"
+      - name: "Run tests"
+        run: |
+          cd terraform
+          just test
+      - name: "Run integration tests"
+        run: |
+          cd terraform
+          just it
+    timeout-minutes: 5
+name: "Test terraform"
+"on":
+  pull_request:
+    paths:
+      - "terraform/**"
+  push:
+    branches:
+      - "main"
+    paths:
+      - "terraform/**"
+permissions:
+  contents: "read"

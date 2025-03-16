@@ -50,6 +50,103 @@ local directory = {
     ],
   },
   workflows: {
+    local workflows = self,
+    'test-terraform.yml': {
+      name: 'Test terraform',
+      on: {
+        push: {
+          branches: ['main'],
+          paths: ['terraform/**'],
+        },
+        pull_request: {
+          paths: ['terraform/**'],
+        },
+      },
+      permissions: {
+        contents: 'read',
+      },
+      jobs: {
+        test: {
+          name: 'Test',
+          'runs-on': 'ubuntu-latest',
+          'timeout-minutes': 5,
+          steps: [
+            {
+              uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683',
+            },
+            {
+              uses: 'hashicorp/setup-terraform@v3',
+            },
+            {
+              uses: 'extractions/setup-just@v3',
+            },
+            {
+              uses: 'jaxxstorm/action-install-gh-release@v1.10.0',
+              with: {
+                repo: 'marcbran/jsonnet-kit',
+              },
+            },
+            {
+              name: 'Run tests',
+              run: |||
+                cd terraform
+                just test
+              |||,
+            },
+            {
+              name: 'Run integration tests',
+              run: |||
+                cd terraform
+                just it
+              |||,
+            },
+          ],
+        },
+      },
+    },
+    'release-terraform.yml': {
+      name: 'Test terraform',
+      on: {
+        push: {
+          tags: ['terraform/v*'],
+        },
+      },
+      permissions: {
+        contents: 'read',
+      },
+      jobs: {
+        test: {
+          name: 'Release',
+          'runs-on': 'ubuntu-latest',
+          'timeout-minutes': 5,
+          steps: [
+            {
+              uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683',
+            },
+            {
+              uses: 'hashicorp/setup-terraform@v3',
+            },
+            {
+              uses: 'extractions/setup-just@v3',
+            },
+            {
+              uses: 'jaxxstorm/action-install-gh-release@v1.10.0',
+              with: {
+                repo: 'marcbran/jsonnet-kit',
+              },
+            },
+            {
+              name: 'Run release',
+              run: |||
+                cd terraform
+                just release
+              |||,
+            },
+          ],
+        },
+      },
+    },
+  } {
     ['test-%s.yml' % std.strReplace(std.strReplace(provider, '/', '-'), '.', '-')]: {
       name: 'Test %s' % provider,
       on: {
