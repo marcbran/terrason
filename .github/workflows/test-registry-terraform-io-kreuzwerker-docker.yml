@@ -9,7 +9,7 @@ jobs:
           cache: true
           go-version-file: "terraform-provider/cmd/pull-provider/go.mod"
       - uses: "hashicorp/setup-terraform@v3"
-      - uses: "jaxxstorm/action-install-gh-release@v1.10.0"
+      - uses: "jaxxstorm/action-install-gh-release@v2.0.0"
         with:
           repo: "marcbran/jsonnet-kit"
       - name: "Pull provider spec"
