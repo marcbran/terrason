@@ -2,15 +2,9 @@ local tf = import './main.libsonnet';
 local jsonnet = import './tests/terraform-provider-jsonnet/main.libsonnet';
 local Local = import './tests/terraform-provider-local/main.libsonnet';
 
-local cfg(blocks) = [
-  {
-    terraform: {
-      required_providers: {},
-    },
-  },
-] + blocks;
+local cfg(blocks) = std.manifestJson(blocks);
 
-local localCfg(blocks) = [
+local localCfg(blocks) = std.manifestJson([
   {
     terraform: {
       required_providers: {
@@ -18,9 +12,9 @@ local localCfg(blocks) = [
       },
     },
   },
-] + blocks;
+] + blocks);
 
-local localAliasCfg(blocks) = [
+local localAliasCfg(blocks) = std.manifestJson([
   {
     terraform: {
       required_providers: {
@@ -35,9 +29,9 @@ local localAliasCfg(blocks) = [
       },
     },
   },
-] + blocks;
+] + blocks);
 
-local localJsonnetCfg(blocks) = [
+local localJsonnetCfg(blocks) = std.manifestJson([
   {
     terraform: {
       required_providers: {
@@ -46,7 +40,7 @@ local localJsonnetCfg(blocks) = [
       },
     },
   },
-] + blocks;
+] + blocks);
 
 local variableTests = {
   name: 'variable',
@@ -124,16 +118,44 @@ local outputTests = {
         ],
       expected: cfg([
         {
+          output: {
+            example2: {
+              value: '${var.example}',
+            },
+          },
+        },
+        {
           variable: {
             example: {
               default: 'hello',
             },
           },
         },
+      ]),
+    },
+    {
+      name: 'unlisted reference',
+      input::
+        local example = tf.Variable('example', {
+          default: 'hello',
+        });
+        [
+          tf.Output('example2', {
+            value: example,
+          }),
+        ],
+      expected: cfg([
         {
           output: {
             example2: {
               value: '${var.example}',
+            },
+          },
+        },
+        {
+          variable: {
+            example: {
+              default: 'hello',
             },
           },
         },
@@ -180,6 +202,46 @@ local localTests = {
       ]),
     },
     {
+      name: 'unlisted reference',
+      input::
+        local example = tf.Local('example', 'hello');
+        [
+          tf.Local('example2', example),
+        ],
+      expected: cfg([
+        {
+          locals: {
+            example: 'hello',
+          },
+        },
+        {
+          locals: {
+            example2: '${local.example}',
+          },
+        },
+      ]),
+    },
+    {
+      name: 'object reference',
+      input::
+        {
+          example: tf.Local('example', 'hello'),
+          example2: tf.Local('example2', self.example),
+        },
+      expected: cfg([
+        {
+          locals: {
+            example: 'hello',
+          },
+        },
+        {
+          locals: {
+            example2: '${local.example}',
+          },
+        },
+      ]),
+    },
+    {
       name: 'resource',
       input::
         local example = Local.resource.file('example_txt', {
@@ -192,6 +254,11 @@ local localTests = {
         ],
       expected: localCfg([
         {
+          locals: {
+            example2: '${local_file.example_txt}',
+          },
+        },
+        {
           resource: {
             local_file: {
               example_txt: {
@@ -199,11 +266,6 @@ local localTests = {
                 filename: 'example.txt',
               },
             },
-          },
-        },
-        {
-          locals: {
-            example2: '${local_file.example_txt}',
           },
         },
       ]),
@@ -491,6 +553,40 @@ local resourceTests = {
       ]),
     },
     {
+      name: 'inline reference',
+      input::
+        local example = Local.resource.file('example_txt', {
+          filename: 'example.txt',
+          content: 'hello',
+        });
+        [
+          tf.Output('example', {
+            value: example,
+            sensitive: true,
+          }),
+        ],
+      expected: localCfg([
+        {
+          resource: {
+            local_file: {
+              example_txt: {
+                content: 'hello',
+                filename: 'example.txt',
+              },
+            },
+          },
+        },
+        {
+          output: {
+            example: {
+              value: '${local_file.example_txt}',
+              sensitive: true,
+            },
+          },
+        },
+      ]),
+    },
+    {
       name: 'field reference',
       input::
         local example = Local.resource.file('example_txt', {
@@ -499,6 +595,40 @@ local resourceTests = {
         });
         [
           example,
+          tf.Output('example', {
+            value: example.content,
+            sensitive: true,
+          }),
+        ],
+      expected: localCfg([
+        {
+          resource: {
+            local_file: {
+              example_txt: {
+                content: 'hello',
+                filename: 'example.txt',
+              },
+            },
+          },
+        },
+        {
+          output: {
+            example: {
+              value: '${local_file.example_txt.content}',
+              sensitive: true,
+            },
+          },
+        },
+      ]),
+    },
+    {
+      name: 'inline field reference',
+      input::
+        local example = Local.resource.file('example_txt', {
+          filename: 'example.txt',
+          content: 'hello',
+        });
+        [
           tf.Output('example', {
             value: example.content,
             sensitive: true,
@@ -561,6 +691,40 @@ local resourceTests = {
       ]),
     },
     {
+      name: 'inline function call',
+      input::
+        local example = Local.resource.file('example_txt', {
+          filename: 'example.txt',
+          content: 'hello',
+        });
+        [
+          tf.Output('example', {
+            value: tf.jsonencode(example),
+            sensitive: true,
+          }),
+        ],
+      expected: localCfg([
+        {
+          resource: {
+            local_file: {
+              example_txt: {
+                content: 'hello',
+                filename: 'example.txt',
+              },
+            },
+          },
+        },
+        {
+          output: {
+            example: {
+              value: '${jsonencode(local_file.example_txt)}',
+              sensitive: true,
+            },
+          },
+        },
+      ]),
+    },
+    {
       name: 'inbound reference',
       input::
         local example = Local.resource.file('example_txt', {
@@ -578,9 +742,9 @@ local resourceTests = {
         {
           resource: {
             local_file: {
-              example_txt: {
-                content: 'hello',
-                filename: 'example.txt',
+              example_2_txt: {
+                content: '${local_file.example_txt.content}',
+                filename: 'example2.txt',
               },
             },
           },
@@ -588,9 +752,45 @@ local resourceTests = {
         {
           resource: {
             local_file: {
+              example_txt: {
+                content: 'hello',
+                filename: 'example.txt',
+              },
+            },
+          },
+        },
+      ]),
+    },
+    {
+      name: 'inline inbound reference',
+      input::
+        local example = Local.resource.file('example_txt', {
+          filename: 'example.txt',
+          content: 'hello',
+        });
+        [
+          Local.resource.file('example_2_txt', {
+            filename: 'example2.txt',
+            content: example.content,
+          }),
+        ],
+      expected: localCfg([
+        {
+          resource: {
+            local_file: {
               example_2_txt: {
                 content: '${local_file.example_txt.content}',
                 filename: 'example2.txt',
+              },
+            },
+          },
+        },
+        {
+          resource: {
+            local_file: {
+              example_txt: {
+                content: 'hello',
+                filename: 'example.txt',
               },
             },
           },
@@ -611,6 +811,36 @@ local dataTests = {
         });
         [
           example,
+          tf.Output('example', {
+            value: example,
+          }),
+        ],
+      expected: localCfg([
+        {
+          data: {
+            local_file: {
+              example_txt: {
+                filename: '../tests/example/example.txt',
+              },
+            },
+          },
+        },
+        {
+          output: {
+            example: {
+              value: '${data.local_file.example_txt}',
+            },
+          },
+        },
+      ]),
+    },
+    {
+      name: 'inline reference',
+      input::
+        local example = Local.data.file('example_txt', {
+          filename: '../tests/example/example.txt',
+        });
+        [
           tf.Output('example', {
             value: example,
           }),
@@ -666,6 +896,36 @@ local dataTests = {
       ]),
     },
     {
+      name: 'inline field reference',
+      input::
+        local example = Local.data.file('example_txt', {
+          filename: '../tests/example/example.txt',
+        });
+        [
+          tf.Output('example', {
+            value: example.content,
+          }),
+        ],
+      expected: localCfg([
+        {
+          data: {
+            local_file: {
+              example_txt: {
+                filename: '../tests/example/example.txt',
+              },
+            },
+          },
+        },
+        {
+          output: {
+            example: {
+              value: '${data.local_file.example_txt.content}',
+            },
+          },
+        },
+      ]),
+    },
+    {
       name: 'function call',
       input::
         local example = Local.data.file('example_txt', {
@@ -673,6 +933,36 @@ local dataTests = {
         });
         [
           example,
+          tf.Output('example', {
+            value: tf.jsonencode(example),
+          }),
+        ],
+      expected: localCfg([
+        {
+          data: {
+            local_file: {
+              example_txt: {
+                filename: '../tests/example/example.txt',
+              },
+            },
+          },
+        },
+        {
+          output: {
+            example: {
+              value: '${jsonencode(data.local_file.example_txt)}',
+            },
+          },
+        },
+      ]),
+    },
+    {
+      name: 'inline function call',
+      input::
+        local example = Local.data.file('example_txt', {
+          filename: '../tests/example/example.txt',
+        });
+        [
           tf.Output('example', {
             value: tf.jsonencode(example),
           }),
@@ -712,8 +1002,8 @@ local dataTests = {
         {
           data: {
             local_file: {
-              example_txt: {
-                filename: '../tests/example/example.txt',
+              example_2_txt: {
+                filename: '${data.local_file.example_txt.filename}',
               },
             },
           },
@@ -721,8 +1011,40 @@ local dataTests = {
         {
           data: {
             local_file: {
+              example_txt: {
+                filename: '../tests/example/example.txt',
+              },
+            },
+          },
+        },
+      ]),
+    },
+    {
+      name: 'inline inbound reference',
+      input::
+        local example = Local.data.file('example_txt', {
+          filename: '../tests/example/example.txt',
+        });
+        [
+          Local.data.file('example_2_txt', {
+            filename: example.filename,
+          }),
+        ],
+      expected: localCfg([
+        {
+          data: {
+            local_file: {
               example_2_txt: {
                 filename: '${data.local_file.example_txt.filename}',
+              },
+            },
+          },
+        },
+        {
+          data: {
+            local_file: {
+              example_txt: {
+                filename: '../tests/example/example.txt',
               },
             },
           },
@@ -872,7 +1194,7 @@ local forTests = {
 };
 
 {
-  output(input): tf.Cfg(input),
+  output(input): std.manifestJson(tf.Cfg(input)),
   tests: [
     variableTests,
     outputTests,
