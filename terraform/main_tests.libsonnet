@@ -490,6 +490,41 @@ local providerTests = {
       ]),
     },
     {
+      name: 'variable',
+      input::
+        local localAlias = Local.withConfiguration('test', {
+          token: tf.Variable('token', {
+            default: 'asdf',
+          }),
+        });
+        [
+          localAlias.resource.file('example_txt', {
+            filename: 'example.txt',
+            content: 'hello',
+          }),
+        ],
+      expected: localAliasCfg([
+        {
+          resource: {
+            local_file: {
+              example_txt: {
+                provider: 'local.test',
+                content: 'hello',
+                filename: 'example.txt',
+              },
+            },
+          },
+        },
+        {
+          variable: {
+            token: {
+              default: 'asdf',
+            },
+          },
+        },
+      ]),
+    },
+    {
       name: 'provider function',
       input::
         [
