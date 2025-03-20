@@ -176,39 +176,42 @@ local build = j.Local('build', j.Object([
   ),
 ], newlines=1));
 
-local providerTemplate = j.LocalFunc('providerTemplate', [j.Id('provider'), j.Id('requirements'), j.Id('configuration')], j.Object([
-  j.Local('providerRequirements', j.Object([j.Field(j.FieldNameExpr(j.String('terraform.required_providers.%s', [j.Id('provider')])), j.Id('requirements'))])),
+local providerTemplate = j.LocalFunc('providerTemplate', [j.Id('provider'), j.Id('requirements'), j.Id('rawConfiguration'), j.Id('configuration')], j.Object([
+  j.Local('providerRequirements', j.Object([j.Field(j.FieldNameExpr(j.String('terraform.required_providers.%s', [j.Id('provider')])), j.Id('requirements'))], newlines=1)),
   j.Local(
     'providerAlias',
-    j.If(j.Eq(j.Id('configuration'), j.Null)).
-      Then(j.Null).
-      Else(j.Member(j.Id('configuration'), 'alias'))
-  ),
-  j.Local(
-    'providerRef',
-    j.If(j.Eq(j.Id('configuration'), j.Null)).
-      Then(j.Null).
-      Else(j.String('%s.%s', [j.Id('provider'), j.Id('providerAlias')]))
+    j.Std.get(j.Id('configuration'), j.String('alias')).default(j.Null),
   ),
   j.Local(
     'providerConfiguration',
     j.If(j.Eq(j.Id('configuration'), j.Null)).
-      Then(j.Object([])).
-      Else(j.Object([
-      j.Field(j.FieldNameExpr(j.Id('providerRef')), j.Object([
-        j.Field(j.Id('provider'), j.Object([
-          j.Field(j.FieldNameExpr(j.Id('provider')), j.Id('configuration')),
-        ])),
+      Then(j.Object([
+      j.Field(j.Id('_'), j.Object([
+        j.Field(j.Id('refBlock'), j.Object([])),
+        j.Field(j.Id('blocks'), j.Array([])),
       ])),
-    ]))
-  ),
-  j.Local(
-    'providerRefBlock',
-    j.If(j.Eq(j.Id('configuration'), j.Null)).
-      Then(j.Object([])).
+    ])).
       Else(j.Object([
-      j.Field(j.Id('provider'), j.Id('providerRef')),
-    ]))
+      j.Field(j.Id('_'), j.Object([
+        j.Local('_', j.Self),
+        j.Field(j.Id('ref'), j.String('%s.%s', [j.Id('provider'), j.Member(j.Id('configuration'), 'alias')])),
+        j.Field(j.Id('refBlock'), j.Object([
+          j.Field(j.Id('provider'), j.Member(j.Id('_'), 'ref')),
+        ], newlines=1)),
+        j.Field(j.Id('block'), j.Object([
+          j.Field(j.Id('provider'), j.Object([
+            j.Field(j.FieldNameExpr(j.Id('provider')), j.Std.prune(j.Id('configuration'))),
+          ], newlines=1)),
+        ], newlines=1)),
+        j.Field(
+          j.Id('blocks'),
+          j.Add(j.Call(j.Member(j.Id('build'), 'blocks'), [j.Id('rawConfiguration')]), j.Object([
+            j.Field(j.FieldNameExpr(j.Member(j.Id('_'), 'ref')), j.Member(j.Id('_'), 'block')),
+          ], newlines=1))
+        ),
+      ], newlines=1)),
+    ], newlines=1)),
+    newline=true
   ),
   j.FieldFunc(j.Id('blockType'), [j.Id('blockType')], j.Object([
     j.Local(
@@ -248,20 +251,14 @@ local providerTemplate = j.LocalFunc('providerTemplate', [j.Id('provider'), j.Id
         j.Field(j.Id('block'), j.Object([
           j.Field(j.FieldNameExpr(j.Id('blockType')), j.Object([
             j.Field(j.FieldNameExpr(j.Id('type')), j.Object([
-              j.Field(j.FieldNameExpr(j.Id('name')), j.Std.prune(j.Add(j.Add(j.Id('metaBlock'), j.Id('block')), j.Id('providerRefBlock')))),
+              j.Field(j.FieldNameExpr(j.Id('name')), j.Std.prune(j.Add(j.Add(j.Member(j.Member(j.Id('providerConfiguration'), '_'), 'refBlock'), j.Id('metaBlock')), j.Id('block')))),
             ], newlines=1)),
           ], newlines=1)),
         ], newlines=1)),
         j.Field(
           j.Id('blocks'),
           j.Add(
-            j.Add(
-              j.Add(
-                j.Call(j.Member(j.Id('build'), 'blocks'), [j.Id('rawBlock')]),
-                j.Id('providerRequirements')
-              ),
-              j.Id('providerConfiguration')
-            ),
+            j.Add(j.Call(j.Member(j.Id('build'), 'blocks'), [j.Add(j.Array([j.Id('providerConfiguration')]), j.Array([j.Id('rawBlock')]))]), j.Id('providerRequirements')),
             j.Object([
               j.Field(j.FieldNameExpr(j.Member(j.Id('_'), 'ref')), j.Member(j.Id('_'), 'block')),
             ], newlines=1)
@@ -287,7 +284,7 @@ local providerTemplate = j.LocalFunc('providerTemplate', [j.Id('provider'), j.Id
       j.Field(j.Id('ref'), j.String('provider::%s::%s(%s)', [j.Id('provider'), j.Id('name'), j.Id('parameterString')])),
       j.Field(
         j.Id('blocks'),
-        j.Add(j.Add(j.Call(j.Member(j.Id('build'), 'blocks'), [j.Id('parameters')]), j.Id('providerRequirements')), j.Id('providerConfiguration'))
+        j.Add(j.Call(j.Member(j.Id('build'), 'blocks'), [j.Add(j.Array([j.Id('providerConfiguration')]), j.Array([j.Id('parameters')]))]), j.Id('providerRequirements'))
       ),
     ], newlines=1)),
   ], newlines=1)),
@@ -359,7 +356,8 @@ local providerConfiguration(provider) =
   j.FieldFunc(
     j.Id('withConfiguration'),
     [j.Id('alias'), j.Id('block')],
-    j.Call(j.Id('provider'), [j.Std.prune(
+    j.Call(j.Id('provider'), [
+      j.Id('block'),
       j.Object(std.flattenArrays([[
         j.Field(j.Id('alias'), j.Id('alias')),
       ]] + [
@@ -378,7 +376,7 @@ local providerConfiguration(provider) =
           ]
         for attributeName in std.objectFields(attributes)
       ]), newlines=1),
-    )])
+    ])
   );
 
 local terraformProvider(provider) =
@@ -386,17 +384,17 @@ local terraformProvider(provider) =
   j.Exprs([
     build,
     providerTemplate,
-    j.LocalFunc('provider', [j.Id('configuration')], j.Object(
+    j.LocalFunc('provider', [j.Id('rawConfiguration'), j.Id('configuration')], j.Object(
       [
         providerRequirements(provider.source, provider.version),
-        j.Local('provider', j.Call(j.Id('providerTemplate'), [j.String(provider.name), j.Id('requirements'), j.Id('configuration')])),
+        j.Local('provider', j.Call(j.Id('providerTemplate'), [j.String(provider.name), j.Id('requirements'), j.Id('rawConfiguration'), j.Id('configuration')])),
       ]
       + resourceBlocks(provider.name, 'resource', std.get(providerSchema, 'resource_schemas', {}))
       + resourceBlocks(provider.name, 'data', std.get(providerSchema, 'data_source_schemas', {}))
       + functionBlocks(std.get(providerSchema, 'functions', {})),
       newlines=1
     )),
-    j.Local('providerWithConfiguration', j.Add(j.Call(j.Id('provider'), [j.Null]), j.Object([
+    j.Local('providerWithConfiguration', j.Add(j.Call(j.Id('provider'), [j.Null, j.Null]), j.Object([
       providerConfiguration(providerSchema.provider),
     ], newlines=1))),
     j.Id('providerWithConfiguration'),
