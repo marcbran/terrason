@@ -180,7 +180,9 @@ local providerTemplate = j.LocalFunc('providerTemplate', [j.Id('provider'), j.Id
   j.Local('providerRequirements', j.Object([j.Field(j.FieldNameExpr(j.String('terraform.required_providers.%s', [j.Id('provider')])), j.Id('requirements'))], newlines=1)),
   j.Local(
     'providerAlias',
-    j.Std.get(j.Id('configuration'), j.String('alias')).default(j.Null),
+    j.If(j.Eq(j.Id('configuration'), j.Null)).
+      Then(j.Null).
+      Else(j.Std.get(j.Id('configuration'), j.String('alias')).default(j.Null)),
   ),
   j.Local(
     'providerConfiguration',
