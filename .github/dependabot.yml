@@ -35,6 +35,10 @@ updates:
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
+  - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/tfe"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
   - directory: "/terraform-provider/providers/registry.terraform.io/hashicorp/tls"
     package-ecosystem: "terraform"
     schedule:
