@@ -3,7 +3,16 @@ set fallback := true
 default:
     @just --list
 
-pull-provider dir:
+clean-provider dir:
+    #!/usr/bin/env bash
+    dir="{{dir}}"
+
+    rm -rf "./${dir}/.terraform"
+    rm -rf "./${dir}/.terraform.lock.hcl"
+    rm -rf "./${dir}/provider.json"
+    rm -rf "./${dir}/gen"
+
+pull-provider dir: (clean-provider dir)
     #!/usr/bin/env bash
     dir="{{dir}}"
 

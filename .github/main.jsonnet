@@ -6,6 +6,7 @@ local providers = [
   'registry.terraform.io/hashicorp/tfmigrate',
   'registry.terraform.io/hashicorp/time',
   'registry.terraform.io/hashicorp/local',
+  'registry.terraform.io/hashicorp/tfe',
   'registry.terraform.io/hashicorp/tls',
   'registry.terraform.io/hashicorp/null',
   'registry.terraform.io/hashicorp/azurerm',
