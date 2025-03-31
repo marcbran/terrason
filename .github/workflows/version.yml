@@ -1,5 +1,10 @@
 name: Versions
 
+on:
+  push:
+    branches:
+      - "version"
+
 permissions:
   contents: read
 
