@@ -27,6 +27,15 @@ local providers = [
   'registry.terraform.io/marcbran/dolt',
 ];
 
+local versions = {
+  [std.split(step.uses, '@')[0]]: std.split(step.uses, '@')[1]
+  for step in std.parseYaml(importstr './workflows/version.yml').jobs.version.steps
+};
+
+local uses(action) = {
+  uses: '%s@%s' % [action, versions[action]],
+};
+
 local directory = {
   'dependabot.yml': {
     version: 2,
@@ -72,17 +81,10 @@ local directory = {
           'runs-on': 'ubuntu-latest',
           'timeout-minutes': 5,
           steps: [
-            {
-              uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683',
-            },
-            {
-              uses: 'hashicorp/setup-terraform@v3',
-            },
-            {
-              uses: 'extractions/setup-just@v3',
-            },
-            {
-              uses: 'jaxxstorm/action-install-gh-release@v1.10.0',
+            uses('actions/checkout'),
+            uses('hashicorp/setup-terraform'),
+            uses('extractions/setup-just'),
+            uses('jaxxstorm/action-install-gh-release') {
               with: {
                 repo: 'marcbran/jsonnet-kit',
               },
@@ -121,17 +123,10 @@ local directory = {
           'runs-on': 'ubuntu-latest',
           'timeout-minutes': 5,
           steps: [
-            {
-              uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683',
-            },
-            {
-              uses: 'hashicorp/setup-terraform@v3',
-            },
-            {
-              uses: 'extractions/setup-just@v3',
-            },
-            {
-              uses: 'jaxxstorm/action-install-gh-release@v1.10.0',
+            uses('actions/checkout'),
+            uses('hashicorp/setup-terraform'),
+            uses('extractions/setup-just'),
+            uses('jaxxstorm/action-install-gh-release') {
               with: {
                 repo: 'marcbran/jsonnet-kit',
               },
@@ -159,41 +154,74 @@ local directory = {
         contents: 'read',
       },
       jobs: {
-        build: {
-          name: 'Build',
+        test: {
+          name: 'Test',
           'runs-on': 'ubuntu-latest',
           'timeout-minutes': 5,
           steps: [
-            {
-              uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683',
-            },
-            {
-              uses: 'actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34',
+            uses('actions/checkout'),
+            uses('hashicorp/setup-terraform'),
+            uses('extractions/setup-just'),
+            uses('actions/setup-go') {
               with: {
                 'go-version-file': 'terraform-provider/cmd/pull-provider/go.mod',
                 cache: true,
               },
             },
-            {
-              uses: 'hashicorp/setup-terraform@v3',
-            },
-            {
-              uses: 'jaxxstorm/action-install-gh-release@v1.10.0',
+            uses('jaxxstorm/action-install-gh-release') {
               with: {
                 repo: 'marcbran/jsonnet-kit',
               },
             },
             {
-              name: 'Pull provider spec',
+              name: 'Run tests',
               run: |||
-                cd terraform-provider/cmd/pull-provider
-                go run main.go ../../providers/%(provider)s
+                cd terraform-provider
+                just gen-provider ./providers/%(provider)s
               ||| % { provider: provider },
             },
+          ],
+        },
+      },
+    }
+    for provider in providers
+  } {
+    ['release-%s.yml' % std.strReplace(std.strReplace(provider, '/', '-'), '.', '-')]: {
+      name: 'Release %s' % provider,
+      on: {
+        push: {
+          branches: ['main'],
+          paths: ['terraform-provider/providers/%s/**' % provider],
+        },
+      },
+      permissions: {
+        contents: 'read',
+      },
+      jobs: {
+        release: {
+          name: 'Release',
+          'runs-on': 'ubuntu-latest',
+          'timeout-minutes': 5,
+          steps: [
+            uses('actions/checkout'),
+            uses('hashicorp/setup-terraform'),
+            uses('extractions/setup-just'),
+            uses('actions/setup-go') {
+              with: {
+                'go-version-file': 'terraform-provider/cmd/pull-provider/go.mod',
+                cache: true,
+              },
+            },
+            uses('jaxxstorm/action-install-gh-release') {
+              with: {
+                repo: 'marcbran/jsonnet-kit',
+              },
+            },
             {
-              name: 'Manifest Jsonnet files',
+              name: 'Run tests',
               run: |||
-                jsonnet-kit -J ./terraform-provider/template/vendor manifest "./terraform-provider/providers/%(provider)s"
+                cd terraform-provider
+                just release-provider ./providers/%(provider)s
               ||| % { provider: provider },
             },
           ],
