@@ -1,6 +1,6 @@
 jobs:
-  test:
-    name: "Test"
+  release:
+    name: "Release"
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
@@ -16,12 +16,14 @@ jobs:
       - name: "Run tests"
         run: |
           cd terraform-provider
-          just gen-provider ./providers/registry.terraform.io/hashicorp/null
+          just release-provider ./providers/registry.terraform.io/hashicorp/external
     timeout-minutes: 5
-name: "Test registry.terraform.io/hashicorp/null"
+name: "Release registry.terraform.io/hashicorp/external"
 "on":
-  pull_request:
+  push:
+    branches:
+      - "main"
     paths:
-      - "terraform-provider/providers/registry.terraform.io/hashicorp/null/**"
+      - "terraform-provider/providers/registry.terraform.io/hashicorp/external/**"
 permissions:
   contents: "read"

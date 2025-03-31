@@ -1,24 +1,22 @@
 jobs:
-  build:
-    name: "Build"
+  test:
+    name: "Test"
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+      - uses: "hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd"
+      - uses: "extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff"
       - uses: "actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b"
         with:
           cache: true
           go-version-file: "terraform-provider/cmd/pull-provider/go.mod"
-      - uses: "hashicorp/setup-terraform@v3"
-      - uses: "jaxxstorm/action-install-gh-release@v2.0.0"
+      - uses: "jaxxstorm/action-install-gh-release@4304621e8c48d66093a8a214af5d5b5bc3b3d943"
         with:
           repo: "marcbran/jsonnet-kit"
-      - name: "Pull provider spec"
+      - name: "Run tests"
         run: |
-          cd terraform-provider/cmd/pull-provider
-          go run main.go ../../providers/registry.terraform.io/newrelic/newrelic
-      - name: "Manifest Jsonnet files"
-        run: |
-          jsonnet-kit -J ./terraform-provider/template/vendor manifest "./terraform-provider/providers/registry.terraform.io/newrelic/newrelic"
+          cd terraform-provider
+          just gen-provider ./providers/registry.terraform.io/newrelic/newrelic
     timeout-minutes: 5
 name: "Test registry.terraform.io/newrelic/newrelic"
 "on":
