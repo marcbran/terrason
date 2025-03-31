@@ -13,6 +13,9 @@ jobs:
       - uses: "jaxxstorm/action-install-gh-release@4304621e8c48d66093a8a214af5d5b5bc3b3d943"
         with:
           repo: "marcbran/jsonnet-kit"
+      - uses: "jaxxstorm/action-install-gh-release@4304621e8c48d66093a8a214af5d5b5bc3b3d943"
+        with:
+          repo: "google/go-jsonnet"
       - name: "Run tests"
         run: |
           cd terraform-provider
