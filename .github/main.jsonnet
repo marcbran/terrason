@@ -64,10 +64,6 @@ local directory = {
     'test-terraform.yml': {
       name: 'Test terraform',
       on: {
-        push: {
-          branches: ['main'],
-          paths: ['terraform/**'],
-        },
         pull_request: {
           paths: ['terraform/**'],
         },
@@ -111,7 +107,8 @@ local directory = {
       name: 'Test terraform',
       on: {
         push: {
-          tags: ['terraform/v*'],
+          branches: ['main'],
+          paths: ['terraform/**'],
         },
       },
       permissions: {

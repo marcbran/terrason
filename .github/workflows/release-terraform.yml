@@ -17,7 +17,9 @@ jobs:
 name: "Test terraform"
 "on":
   push:
-    tags:
-      - "terraform/v*"
+    branches:
+      - "main"
+    paths:
+      - "terraform/**"
 permissions:
   contents: "read"

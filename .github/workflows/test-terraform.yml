@@ -23,10 +23,5 @@ name: "Test terraform"
   pull_request:
     paths:
       - "terraform/**"
-  push:
-    branches:
-      - "main"
-    paths:
-      - "terraform/**"
 permissions:
   contents: "read"
