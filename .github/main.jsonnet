@@ -214,6 +214,11 @@ local directory = {
                 repo: 'marcbran/jsonnet-kit',
               },
             },
+            uses('jaxxstorm/action-install-gh-release') {
+              with: {
+                repo: 'google/go-jsonnet',
+              },
+            },
             {
               name: 'Run tests',
               run: |||
