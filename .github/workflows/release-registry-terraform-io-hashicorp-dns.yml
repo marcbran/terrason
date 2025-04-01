@@ -16,6 +16,10 @@ jobs:
       - uses: "jaxxstorm/action-install-gh-release@4304621e8c48d66093a8a214af5d5b5bc3b3d943"
         with:
           repo: "google/go-jsonnet"
+      - name: "Set Git config"
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
       - env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         name: "Release"
