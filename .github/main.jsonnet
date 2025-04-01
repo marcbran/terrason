@@ -220,11 +220,14 @@ local directory = {
               },
             },
             {
-              name: 'Run tests',
+              name: 'Release',
               run: |||
                 cd terraform-provider
                 just release-provider ./providers/%(provider)s
               ||| % { provider: provider },
+              env: {
+                GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
+              },
             },
           ],
         },

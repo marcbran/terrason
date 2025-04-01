@@ -16,7 +16,9 @@ jobs:
       - uses: "jaxxstorm/action-install-gh-release@4304621e8c48d66093a8a214af5d5b5bc3b3d943"
         with:
           repo: "google/go-jsonnet"
-      - name: "Run tests"
+      - env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        name: "Release"
         run: |
           cd terraform-provider
           just release-provider ./providers/registry.terraform.io/hashicorp/google
