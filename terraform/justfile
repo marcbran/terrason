@@ -4,7 +4,7 @@ default:
     @just --list
 
 release: test it
-    @jsonnet-kit release -r https://github.com/marcbran/jsonnet.git
+    @jsonnet-kit release -r git@github.com:marcbran/jsonnet.git
 
 test:
     @jsonnet-kit test
