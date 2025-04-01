@@ -33,4 +33,4 @@ release-provider dir: (gen-provider dir)
     name="$(jsonnet -S -e "(import '${dir}/provider.json').name")"
     branch="terraform-provider/${source}"
     path="terraform-provider-${name}"
-    jsonnet-kit release -r https://github.com/marcbran/jsonnet.git -b "${branch}" -p "${path}" "./${dir}/gen"
+    jsonnet-kit release -r git@github.com:marcbran/jsonnet.git -b "${branch}" -p "${path}" "./${dir}/gen"
