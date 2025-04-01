@@ -222,8 +222,8 @@ local directory = {
             {
               name: 'Set Git config',
               run: |||
-                git config user.name "${{ github.actor }}"
-                git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+                git config --global user.name "${{ github.actor }}"
+                git config --global user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
               |||,
             },
             {
