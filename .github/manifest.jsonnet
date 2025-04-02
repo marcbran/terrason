@@ -129,6 +129,13 @@ local directory = {
               },
             },
             {
+              name: 'Set Git config',
+              run: |||
+                git config --global user.name "${{ github.actor }}"
+                git config --global user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+              |||,
+            },
+            {
               name: 'Run release',
               run: |||
                 cd terraform
