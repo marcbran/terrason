@@ -9,6 +9,7 @@ release: test it
 test:
     @jsonnet-kit test
 
+
 it:
     #!/usr/bin/env bash
     echo "Running integration tests..."
