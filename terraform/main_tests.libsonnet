@@ -1109,6 +1109,55 @@ local conditionTests = {
         },
       ]),
     },
+    {
+      name: 'variable',
+      input::
+        local var = tf.Local('var', false);
+        [
+          var,
+          tf.Output('example', {
+            value: tf.If(tf.eq(true, var)).Then('a').Else('b'),
+          }),
+        ],
+      expected: cfg([
+        {
+          locals: {
+            var: false,
+          },
+        },
+        {
+          output: {
+            example: {
+              value: '${true == local.var ? "a" : "b"}',
+            },
+          },
+        },
+      ]),
+    },
+    {
+      name: 'inline variable',
+      input::
+        local var = tf.Local('var', false);
+        [
+          tf.Output('example', {
+            value: tf.If(tf.eq(true, var)).Then('a').Else('b'),
+          }),
+        ],
+      expected: cfg([
+        {
+          locals: {
+            var: false,
+          },
+        },
+        {
+          output: {
+            example: {
+              value: '${true == local.var ? "a" : "b"}',
+            },
+          },
+        },
+      ]),
+    },
   ],
 };
 
@@ -1138,6 +1187,30 @@ local forTests = {
         local var = tf.Local('var', [1, 2, 3]);
         [
           var,
+          tf.Output('example', {
+            value: tf.For('s').In(var).List(function(s) s),
+          }),
+        ],
+      expected: cfg([
+        {
+          locals: {
+            var: [1, 2, 3],
+          },
+        },
+        {
+          output: {
+            example: {
+              value: '${[for s in local.var: s]}',
+            },
+          },
+        },
+      ]),
+    },
+    {
+      name: 'list inline variable',
+      input::
+        local var = tf.Local('var', [1, 2, 3]);
+        [
           tf.Output('example', {
             value: tf.For('s').In(var).List(function(s) s),
           }),
