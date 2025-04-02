@@ -9,12 +9,14 @@ jobs:
       - uses: "jaxxstorm/action-install-gh-release@4304621e8c48d66093a8a214af5d5b5bc3b3d943"
         with:
           repo: "marcbran/jsonnet-kit"
-      - name: "Run release"
+      - env:
+          GIT_PRIVATE_KEY: "${{ secrets.GIT_PRIVATE_KEY }}"
+        name: "Run release"
         run: |
           cd terraform
           just release
     timeout-minutes: 5
-name: "Test terraform"
+name: "Release terraform"
 "on":
   push:
     branches:

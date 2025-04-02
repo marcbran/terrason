@@ -104,7 +104,7 @@ local directory = {
       },
     },
     'release-terraform.yml': {
-      name: 'Test terraform',
+      name: 'Release terraform',
       on: {
         push: {
           branches: ['main'],
@@ -134,6 +134,9 @@ local directory = {
                 cd terraform
                 just release
               |||,
+              env: {
+                GIT_PRIVATE_KEY: '${{ secrets.GIT_PRIVATE_KEY }}',
+              },
             },
           ],
         },
@@ -233,7 +236,7 @@ local directory = {
                 just release-provider ./providers/%(provider)s
               ||| % { provider: provider },
               env: {
-                GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
+                GIT_PRIVATE_KEY: '${{ secrets.GIT_PRIVATE_KEY }}',
               },
             },
           ],

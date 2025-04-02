@@ -21,7 +21,7 @@ jobs:
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
       - env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          GIT_PRIVATE_KEY: "${{ secrets.GIT_PRIVATE_KEY }}"
         name: "Release"
         run: |
           cd terraform-provider
