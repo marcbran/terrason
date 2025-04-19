@@ -23,6 +23,7 @@ local providers = [
   'registry.terraform.io/integrations/github',
   'registry.terraform.io/DataDog/datadog',
   'registry.terraform.io/newrelic/newrelic',
+  'registry.terraform.io/goauthentik/authentik',
   'registry.terraform.io/marcbran/jsonnet',
   'registry.terraform.io/marcbran/dolt',
 ];

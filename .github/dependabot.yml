@@ -103,6 +103,10 @@ updates:
     package-ecosystem: "terraform"
     schedule:
       interval: "daily"
+  - directory: "/terraform-provider/providers/registry.terraform.io/goauthentik/authentik"
+    package-ecosystem: "terraform"
+    schedule:
+      interval: "daily"
   - directory: "/terraform-provider/providers/registry.terraform.io/marcbran/jsonnet"
     package-ecosystem: "terraform"
     schedule:
