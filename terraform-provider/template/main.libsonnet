@@ -293,6 +293,7 @@ local providerTemplate = j.LocalFunc('providerTemplate', [j.Id('provider'), j.Id
 ], newlines=1));
 
 local resourceBlock(provider, type, name, resource) =
+  local attributes = std.get(resource.block, 'attributes', {});
   j.FieldFunc(
     j.String(std.substr(name, std.length(provider) + 1, std.length(name))),
     [j.Id('name'), j.Id('block')],
@@ -301,7 +302,7 @@ local resourceBlock(provider, type, name, resource) =
       j.Field(j.String('_'), j.Call(j.Member(j.Id('resource'), '_'), [
         j.Id('block'),
         j.Object(std.flattenArrays([
-          local attribute = resource.block.attributes[attributeName];
+          local attribute = attributes[attributeName];
           // TODO there are some providers with schemas where the computed property is actually required in resources
           //          if std.get(attribute, 'computed', false) then [] else
           [
@@ -315,12 +316,12 @@ local resourceBlock(provider, type, name, resource) =
             ),
             j.Newline,
           ]
-          for attributeName in std.objectFields(resource.block.attributes)
+          for attributeName in std.objectFields(attributes)
         ]), newlines=1),
       ])),
     ] + [
       j.Field(j.String(attributeName), j.Call(j.Member(j.Id('resource'), 'field'), [j.Member(j.Member(j.Self, '_'), 'blocks'), j.String(attributeName)]))
-      for attributeName in std.objectFields(resource.block.attributes)
+      for attributeName in std.objectFields(attributes)
     ], newlines=1)
   );
 
