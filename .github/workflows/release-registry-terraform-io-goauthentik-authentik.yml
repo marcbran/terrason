@@ -1,0 +1,38 @@
+jobs:
+  release:
+    name: "Release"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+      - uses: "hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd"
+      - uses: "extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff"
+      - uses: "actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b"
+        with:
+          cache: true
+          go-version-file: "terraform-provider/cmd/pull-provider/go.mod"
+      - uses: "jaxxstorm/action-install-gh-release@4304621e8c48d66093a8a214af5d5b5bc3b3d943"
+        with:
+          repo: "marcbran/jsonnet-kit"
+      - uses: "jaxxstorm/action-install-gh-release@4304621e8c48d66093a8a214af5d5b5bc3b3d943"
+        with:
+          repo: "google/go-jsonnet"
+      - name: "Set Git config"
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+      - env:
+          GIT_PRIVATE_KEY: "${{ secrets.GIT_PRIVATE_KEY }}"
+        name: "Release"
+        run: |
+          cd terraform-provider
+          just release-provider ./providers/registry.terraform.io/goauthentik/authentik
+    timeout-minutes: 5
+name: "Release registry.terraform.io/goauthentik/authentik"
+"on":
+  push:
+    branches:
+      - "main"
+    paths:
+      - "terraform-provider/providers/registry.terraform.io/goauthentik/authentik/**"
+permissions:
+  contents: "read"
