@@ -23,5 +23,6 @@ name: "Test registry.terraform.io/hashicorp/tfe"
   pull_request:
     paths:
       - "terraform-provider/providers/registry.terraform.io/hashicorp/tfe/**"
+  workflow_dispatch: {}
 permissions:
   contents: "read"

@@ -23,5 +23,6 @@ name: "Test registry.terraform.io/marcbran/jsonnet"
   pull_request:
     paths:
       - "terraform-provider/providers/registry.terraform.io/marcbran/jsonnet/**"
+  workflow_dispatch: {}
 permissions:
   contents: "read"

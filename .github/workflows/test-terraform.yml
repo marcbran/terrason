@@ -23,5 +23,6 @@ name: "Test terraform"
   pull_request:
     paths:
       - "terraform/**"
+  workflow_dispatch: {}
 permissions:
   contents: "read"

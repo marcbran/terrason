@@ -23,5 +23,6 @@ name: "Test registry.terraform.io/goauthentik/authentik"
   pull_request:
     paths:
       - "terraform-provider/providers/registry.terraform.io/goauthentik/authentik/**"
+  workflow_dispatch: {}
 permissions:
   contents: "read"

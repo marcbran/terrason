@@ -23,5 +23,6 @@ name: "Test registry.terraform.io/marcbran/dolt"
   pull_request:
     paths:
       - "terraform-provider/providers/registry.terraform.io/marcbran/dolt/**"
+  workflow_dispatch: {}
 permissions:
   contents: "read"

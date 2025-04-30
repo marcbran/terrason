@@ -23,5 +23,6 @@ name: "Test registry.terraform.io/newrelic/newrelic"
   pull_request:
     paths:
       - "terraform-provider/providers/registry.terraform.io/newrelic/newrelic/**"
+  workflow_dispatch: {}
 permissions:
   contents: "read"

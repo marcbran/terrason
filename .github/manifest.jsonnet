@@ -68,6 +68,7 @@ local directory = {
         pull_request: {
           paths: ['terraform/**'],
         },
+        workflow_dispatch: {},
       },
       permissions: {
         contents: 'read',
@@ -157,6 +158,7 @@ local directory = {
         pull_request: {
           paths: ['terraform-provider/providers/%s/**' % provider],
         },
+        workflow_dispatch: {},
       },
       permissions: {
         contents: 'read',

@@ -23,5 +23,6 @@ name: "Test registry.terraform.io/grafana/grafana"
   pull_request:
     paths:
       - "terraform-provider/providers/registry.terraform.io/grafana/grafana/**"
+  workflow_dispatch: {}
 permissions:
   contents: "read"

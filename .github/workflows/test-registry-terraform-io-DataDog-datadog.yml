@@ -23,5 +23,6 @@ name: "Test registry.terraform.io/DataDog/datadog"
   pull_request:
     paths:
       - "terraform-provider/providers/registry.terraform.io/DataDog/datadog/**"
+  workflow_dispatch: {}
 permissions:
   contents: "read"
