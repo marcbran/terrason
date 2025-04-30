@@ -2,7 +2,7 @@ terraform {
   required_providers {
     cloudinit = {
       source  = "registry.terraform.io/hashicorp/cloudinit"
-      version = "2.3.6"
+      version = "2.3.7"
     }
   }
 }
