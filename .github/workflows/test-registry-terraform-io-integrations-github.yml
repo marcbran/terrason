@@ -23,5 +23,6 @@ name: "Test registry.terraform.io/integrations/github"
   pull_request:
     paths:
       - "terraform-provider/providers/registry.terraform.io/integrations/github/**"
+  workflow_dispatch: {}
 permissions:
   contents: "read"

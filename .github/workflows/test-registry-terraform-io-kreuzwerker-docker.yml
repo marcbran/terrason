@@ -23,5 +23,6 @@ name: "Test registry.terraform.io/kreuzwerker/docker"
   pull_request:
     paths:
       - "terraform-provider/providers/registry.terraform.io/kreuzwerker/docker/**"
+  workflow_dispatch: {}
 permissions:
   contents: "read"

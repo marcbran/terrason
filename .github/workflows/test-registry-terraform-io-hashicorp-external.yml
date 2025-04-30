@@ -23,5 +23,6 @@ name: "Test registry.terraform.io/hashicorp/external"
   pull_request:
     paths:
       - "terraform-provider/providers/registry.terraform.io/hashicorp/external/**"
+  workflow_dispatch: {}
 permissions:
   contents: "read"
