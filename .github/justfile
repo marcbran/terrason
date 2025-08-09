@@ -1,6 +1,0 @@
-
-manifest:
-  jsonnet-kit manifest .
-
-debug:
-  jsonnet main.jsonnet

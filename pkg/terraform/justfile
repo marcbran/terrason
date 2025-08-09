@@ -1,0 +1,51 @@
+
+test:
+    @jpoet test
+
+build: test
+    @jpoet pkg build
+
+push: build
+    @jpoet pkg push
+
+it:
+    #!/usr/bin/env bash
+    echo "Running integration tests..."
+
+    exit_code=0
+    passed=0
+    total=0
+    while read -r tst; do
+
+      name="$(echo "${tst}" | jq -r '.name')"
+      echo "${name}"
+
+      total=$((total + 1))
+
+      mkdir -p tf
+      echo "${tst}" | jq -r '.actual' > tf/main.tf.json
+
+      if ! output=$(terraform -chdir=tf init 2>&1); then
+        echo "terraform init failed for content: ${content}"
+        echo "$output"
+        exit_code=1
+        rm -rf tf
+        continue
+      fi
+
+      if ! output=$(terraform -chdir=tf plan 2>&1); then
+        echo "terraform plan failed for content: ${content}"
+        echo "$output"
+        exit_code=1
+        rm -rf tf
+        continue
+      fi
+
+      passed=$((passed + 1))
+
+      rm -rf tf
+
+    done < <(jsonnet-kit test --json | jq -rc '.results | .[]')
+
+    echo "Passed: ${passed}/${total}"
+    exit "${exit_code}"
