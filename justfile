@@ -1,10 +1,6 @@
-set fallback := true
 
-default:
-    @just --list
+test:
+  @just -d pkg/terraform -f pkg/terraform/justfile test
 
-github:
-    just -d .github -f .github/Justfile manifest
-
-github-debug:
-    just -d .github -f .github/Justfile debug
+push:
+  @just -d pkg/terraform -f pkg/terraform/justfile push
